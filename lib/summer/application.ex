@@ -15,7 +15,9 @@ defmodule Summer.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Summer.PubSub},
       # Start the Endpoint (http/https)
-      SummerWeb.Endpoint
+      SummerWeb.Endpoint,
+      # Start libcluster
+      {Cluster.Supervisor, libcluster_config()}
       # Start a worker by calling: Summer.Worker.start_link(arg)
       # {Summer.Worker, arg}
     ]
@@ -32,5 +34,10 @@ defmodule Summer.Application do
   def config_change(changed, _new, removed) do
     SummerWeb.Endpoint.config_change(changed, removed)
     :ok
+  end
+
+  defp libcluster_config() do
+    topologies = Application.get_env(:libcluster, :topologies) || []
+    [topologies, [name: Summer.ClusterSupervisor]]
   end
 end
