@@ -43,19 +43,18 @@ COPY config/config.exs config/${MIX_ENV}.exs config/
 RUN mix deps.compile
 
 COPY priv priv
+COPY assets assets
+COPY lib lib
 
 # note: if your project uses a tool like https://purgecss.com/,
 # which customizes asset compilation based on what it finds in
 # your Elixir templates, you will need to move the asset compilation
 # step down so that `lib` is available.
-COPY assets assets
-
-# Compile the release
-COPY lib lib
 
 # For Phoenix 1.6 and later, compile assets using esbuild
 RUN mix assets.deploy
 
+# Compile the release
 RUN mix compile
 
 # Changes to config/runtime.exs don't require recompiling the code

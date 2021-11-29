@@ -16,8 +16,10 @@ defmodule Summer.Application do
       {Phoenix.PubSub, name: Summer.PubSub},
       # Start the Endpoint (http/https)
       SummerWeb.Endpoint,
-      # Start libcluster
-      {Cluster.Supervisor, libcluster_config()}
+      # Start Libcluster
+      {Cluster.Supervisor, libcluster_config()},
+      # Start Oban
+      {Oban, oban_config()}
       # Start a worker by calling: Summer.Worker.start_link(arg)
       # {Summer.Worker, arg}
     ]
@@ -39,5 +41,9 @@ defmodule Summer.Application do
   defp libcluster_config() do
     topologies = Application.get_env(:libcluster, :topologies) || []
     [topologies, [name: Summer.ClusterSupervisor]]
+  end
+
+  defp oban_config do
+    Application.fetch_env!(:summer, Oban)
   end
 end
